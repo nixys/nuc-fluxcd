@@ -1,0 +1,264 @@
+# Example values for all supported Flux custom resources in this chart.
+# Render with:
+#   helm template nuc-fluxcd . -f values.yaml.example
+
+nameOverride: ""
+
+commonLabels:
+  platform: flux
+commonAnnotations:
+  team: platform
+
+apiVersions:
+  alert: notification.toolkit.fluxcd.io/v1beta3
+  artifactGenerator: source.extensions.fluxcd.io/v1beta1
+  bucket: source.toolkit.fluxcd.io/v1
+  externalArtifact: source.toolkit.fluxcd.io/v1
+  gitRepository: source.toolkit.fluxcd.io/v1
+  helmChart: source.toolkit.fluxcd.io/v1
+  helmRelease: helm.toolkit.fluxcd.io/v2
+  helmRepository: source.toolkit.fluxcd.io/v1
+  imagePolicy: image.toolkit.fluxcd.io/v1
+  imageRepository: image.toolkit.fluxcd.io/v1
+  imageUpdateAutomation: image.toolkit.fluxcd.io/v1
+  kustomization: kustomize.toolkit.fluxcd.io/v1
+  ociRepository: source.toolkit.fluxcd.io/v1
+  provider: notification.toolkit.fluxcd.io/v1beta3
+  receiver: notification.toolkit.fluxcd.io/v1
+
+alerts:
+  platform-alert:
+    namespace: flux-system
+    labels:
+      component: alert
+    annotations:
+      note: reconcile-errors
+    spec:
+      providerRef:
+        name: slack-provider
+      eventSeverity: error
+      eventSources:
+        - kind: GitRepository
+          name: platform-config
+        - kind: HelmRelease
+          name: podinfo
+
+artifactGenerators:
+  platform-artifacts:
+    namespace: flux-system
+    labels:
+      component: artifact-generator
+    annotations:
+      note: compose-sources
+    spec:
+      sources:
+        - alias: app-config
+          kind: GitRepository
+          name: platform-config
+        - alias: app-image
+          kind: OCIRepository
+          name: podinfo-oci
+      artifacts:
+        - name: platform-deployable
+          revision: "@app-config"
+          copy:
+            - from: "@app-config/clusters/production/**"
+              to: "@artifact/clusters/production/"
+
+buckets:
+  app-bucket:
+    namespace: flux-system
+    labels:
+      component: source
+    annotations:
+      note: bucket-source
+    spec:
+      interval: 10m
+      provider: generic
+      bucketName: platform-artifacts
+      endpoint: s3.example.com
+
+externalArtifacts:
+  release-bundle:
+    namespace: flux-system
+    labels:
+      component: source
+    annotations:
+      note: external-artifact
+    spec:
+      sourceRef:
+        apiVersion: example.com/v1
+        kind: ReleaseBundle
+        name: platform-bundle
+
+gitRepositories:
+  platform-config:
+    namespace: flux-system
+    labels:
+      component: source
+    annotations:
+      note: git-source
+    spec:
+      interval: 1m
+      url: https://github.com/example/platform-config
+      ref:
+        branch: main
+
+helmCharts:
+  podinfo-chart:
+    namespace: flux-system
+    labels:
+      component: source
+    annotations:
+      note: packaged-chart
+    spec:
+      interval: 10m
+      chart: podinfo
+      version: 6.5.3
+      sourceRef:
+        kind: HelmRepository
+        name: podinfo
+
+helmReleases:
+  podinfo:
+    namespace: flux-system
+    labels:
+      component: release
+    annotations:
+      note: helm-release
+    spec:
+      interval: 5m
+      releaseName: podinfo
+      chart:
+        spec:
+          chart: podinfo
+          version: 6.5.3
+          sourceRef:
+            kind: HelmRepository
+            name: podinfo
+      values:
+        replicaCount: 2
+
+helmRepositories:
+  podinfo:
+    namespace: flux-system
+    labels:
+      component: source
+    annotations:
+      note: helm-repository
+    spec:
+      interval: 10m
+      url: https://stefanprodan.github.io/podinfo
+
+imagePolicies:
+  podinfo-policy:
+    namespace: flux-system
+    labels:
+      component: image
+    annotations:
+      note: image-policy
+    spec:
+      imageRepositoryRef:
+        name: podinfo-images
+      policy:
+        semver:
+          range: 6.x
+
+imageRepositories:
+  podinfo-images:
+    namespace: flux-system
+    labels:
+      component: image
+    annotations:
+      note: image-repository
+    spec:
+      interval: 10m
+      image: ghcr.io/stefanprodan/podinfo
+
+imageUpdateAutomations:
+  podinfo-updater:
+    namespace: flux-system
+    labels:
+      component: image
+    annotations:
+      note: image-automation
+    spec:
+      interval: 30m
+      sourceRef:
+        kind: GitRepository
+        name: platform-config
+      git:
+        checkout:
+          ref:
+            branch: main
+        commit:
+          author:
+            name: Flux Bot
+            email: flux@example.com
+          messageTemplate: "Update images"
+        push:
+          branch: main
+      update:
+        path: ./clusters/production
+        strategy: Setters
+
+kustomizations:
+  apps:
+    namespace: flux-system
+    labels:
+      component: deploy
+    annotations:
+      note: kustomize-apply
+    spec:
+      interval: 5m
+      path: ./clusters/production
+      prune: true
+      sourceRef:
+        kind: GitRepository
+        name: platform-config
+      targetNamespace: apps
+
+ociRepositories:
+  podinfo-oci:
+    namespace: flux-system
+    labels:
+      component: source
+    annotations:
+      note: oci-source
+    spec:
+      interval: 10m
+      url: oci://ghcr.io/stefanprodan/manifests/podinfo
+      ref:
+        semver: 6.x
+
+providers:
+  slack-provider:
+    namespace: flux-system
+    labels:
+      component: notification
+    annotations:
+      note: slack-provider
+    spec:
+      type: slack
+      channel: platform-alerts
+      address: https://slack.com/api/chat.postMessage
+      secretRef:
+        name: slack-webhook-token
+
+receivers:
+  github-receiver:
+    namespace: flux-system
+    labels:
+      component: notification
+    annotations:
+      note: webhook-receiver
+    spec:
+      type: github
+      secretRef:
+        name: github-webhook-token
+      events:
+        - ping
+        - push
+      resources:
+        - kind: GitRepository
+          name: platform-config

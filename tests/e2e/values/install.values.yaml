@@ -1,0 +1,173 @@
+commonLabels:
+  test-suite: e2e
+
+commonAnnotations:
+  test-suite: e2e
+
+apiVersions:
+  alert: notification.toolkit.fluxcd.io/v1beta3
+  artifactGenerator: source.extensions.fluxcd.io/v1beta1
+  bucket: source.toolkit.fluxcd.io/v1
+  externalArtifact: source.toolkit.fluxcd.io/v1
+  gitRepository: source.toolkit.fluxcd.io/v1
+  helmChart: source.toolkit.fluxcd.io/v1
+  helmRelease: helm.toolkit.fluxcd.io/v2
+  helmRepository: source.toolkit.fluxcd.io/v1
+  imagePolicy: image.toolkit.fluxcd.io/v1
+  imageRepository: image.toolkit.fluxcd.io/v1
+  imageUpdateAutomation: image.toolkit.fluxcd.io/v1
+  kustomization: kustomize.toolkit.fluxcd.io/v1
+  ociRepository: source.toolkit.fluxcd.io/v1
+  provider: notification.toolkit.fluxcd.io/v1beta3
+  receiver: notification.toolkit.fluxcd.io/v1
+
+alerts:
+  e2e-alert:
+    spec:
+      providerRef:
+        name: e2e-provider
+      eventSeverity: info
+      eventSources:
+        - kind: GitRepository
+          name: e2e-git
+
+artifactGenerators:
+  e2e-artifact-generator:
+    spec:
+      sources:
+        - alias: git
+          kind: GitRepository
+          name: e2e-git
+        - alias: oci
+          kind: OCIRepository
+          name: e2e-oci
+      artifacts:
+        - name: e2e-generated-artifact
+          revision: "@git"
+          copy:
+            - from: "@git/clusters/e2e/**"
+              to: "@artifact/clusters/e2e/"
+
+buckets:
+  e2e-bucket:
+    spec:
+      interval: 10m
+      provider: generic
+      bucketName: e2e-bucket
+      endpoint: s3.example.com
+
+externalArtifacts:
+  e2e-external-artifact:
+    spec:
+      sourceRef:
+        apiVersion: example.com/v1
+        kind: Bundle
+        name: e2e-source
+
+gitRepositories:
+  e2e-git:
+    spec:
+      interval: 1m
+      url: https://github.com/example/e2e
+      ref:
+        branch: main
+
+helmCharts:
+  e2e-chart:
+    spec:
+      interval: 10m
+      chart: podinfo
+      version: 6.5.3
+      sourceRef:
+        kind: HelmRepository
+        name: e2e-helmrepo
+
+helmReleases:
+  e2e-release:
+    spec:
+      interval: 5m
+      releaseName: e2e-release
+      chart:
+        spec:
+          chart: podinfo
+          version: 6.5.3
+          sourceRef:
+            kind: HelmRepository
+            name: e2e-helmrepo
+
+helmRepositories:
+  e2e-helmrepo:
+    spec:
+      interval: 10m
+      url: https://stefanprodan.github.io/podinfo
+
+imagePolicies:
+  e2e-image-policy:
+    spec:
+      imageRepositoryRef:
+        name: e2e-image-repo
+      policy:
+        semver:
+          range: 6.x
+
+imageRepositories:
+  e2e-image-repo:
+    spec:
+      interval: 10m
+      image: ghcr.io/stefanprodan/podinfo
+
+imageUpdateAutomations:
+  e2e-image-automation:
+    spec:
+      interval: 30m
+      sourceRef:
+        kind: GitRepository
+        name: e2e-git
+      git:
+        checkout:
+          ref:
+            branch: main
+        commit:
+          author:
+            name: Flux Bot
+            email: flux@example.com
+          messageTemplate: "Update images"
+        push:
+          branch: main
+      update:
+        path: ./clusters/e2e
+        strategy: Setters
+
+kustomizations:
+  e2e-kustomization:
+    spec:
+      interval: 5m
+      path: ./clusters/e2e
+      prune: true
+      sourceRef:
+        kind: GitRepository
+        name: e2e-git
+
+ociRepositories:
+  e2e-oci:
+    spec:
+      interval: 10m
+      url: oci://ghcr.io/stefanprodan/manifests/podinfo
+      ref:
+        semver: 6.x
+
+providers:
+  e2e-provider:
+    spec:
+      type: generic
+      address: http://notification-controller.flux-system.svc.cluster.local/
+
+receivers:
+  e2e-receiver:
+    spec:
+      type: generic
+      secretRef:
+        name: e2e-webhook-token
+      resources:
+        - kind: GitRepository
+          name: e2e-git

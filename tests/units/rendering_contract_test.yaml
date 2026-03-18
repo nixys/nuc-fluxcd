@@ -1,0 +1,90 @@
+suite: rendering contract
+templates:
+  - templates/gitrepository.yaml
+  - templates/helmrelease.yaml
+release:
+  name: unit-test
+  namespace: unit-namespace
+
+tests:
+  - it: renders no GitRepository documents by default
+    template: templates/gitrepository.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders no HelmRelease documents by default
+    template: templates/helmrelease.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: applies helper defaults and overrides for namespaced resources
+    values:
+      - values/rendering_contract.values.yaml
+    template: templates/gitrepository.yaml
+    documentSelector:
+      path: metadata.name
+      value: platform-config
+    asserts:
+      - isKind:
+          of: GitRepository
+      - equal:
+          path: apiVersion
+          value: example.net/v1alpha1
+      - equal:
+          path: metadata.namespace
+          value: unit-namespace
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: flux-platform
+      - equal:
+          path: metadata.labels.platform
+          value: flux
+      - equal:
+          path: metadata.labels.component
+          value: source
+      - equal:
+          path: metadata.labels.tier
+          value: control-plane
+      - equal:
+          path: metadata.annotations.team
+          value: platform
+      - equal:
+          path: metadata.annotations.note
+          value: gitops
+      - equal:
+          path: spec.url
+          value: https://github.com/example/platform-config
+
+  - it: applies chart-level apiVersion defaults for other resources
+    values:
+      - values/rendering_contract.values.yaml
+    template: templates/helmrelease.yaml
+    documentSelector:
+      path: metadata.name
+      value: platform-release
+    asserts:
+      - isKind:
+          of: HelmRelease
+      - equal:
+          path: apiVersion
+          value: helm.toolkit.fluxcd.io/v2beta2
+      - equal:
+          path: metadata.namespace
+          value: release-space
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: flux-platform
+      - equal:
+          path: metadata.labels.component
+          value: release
+      - equal:
+          path: metadata.annotations.team
+          value: platform
+      - equal:
+          path: metadata.annotations.note
+          value: promoted
+      - equal:
+          path: spec.releaseName
+          value: platform

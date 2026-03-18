@@ -1,0 +1,7 @@
+{{ include "nuc-fluxcd.renderResources" (dict
+  "root" $
+  "collection" ($.Values.ociRepositories | default dict)
+  "kind" "OCIRepository"
+  "defaultApiVersion" $.Values.apiVersions.ociRepository
+  "namespaced" true
+) }}

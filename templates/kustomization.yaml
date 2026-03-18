@@ -1,0 +1,7 @@
+{{ include "nuc-fluxcd.renderResources" (dict
+  "root" $
+  "collection" ($.Values.kustomizations | default dict)
+  "kind" "Kustomization"
+  "defaultApiVersion" $.Values.apiVersions.kustomization
+  "namespaced" true
+) }}

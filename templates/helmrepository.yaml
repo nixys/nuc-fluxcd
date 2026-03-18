@@ -1,0 +1,7 @@
+{{ include "nuc-fluxcd.renderResources" (dict
+  "root" $
+  "collection" ($.Values.helmRepositories | default dict)
+  "kind" "HelmRepository"
+  "defaultApiVersion" $.Values.apiVersions.helmRepository
+  "namespaced" true
+) }}

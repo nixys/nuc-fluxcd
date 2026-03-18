@@ -1,93 +1,238 @@
-# NUC FluxCD 
+# NUC FluxCD
 
+Helm chart for rendering FluxCD custom resources from declarative values.
 
+The chart does not install Flux controllers or CRDs. It only renders Flux resources that are already supported by the target cluster. The default API versions are aligned with the CRDs referenced by [`flux2/manifests/crds`](https://github.com/fluxcd/flux2/blob/main/manifests/crds/kustomization.yaml).
 
-## Getting started
+## Quick Start
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Render the example configuration:
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.nixys.ru/apps/nuc-subcharts/nuc-fluxcd.git
-git branch -M main
-git push -uf origin main
+```bash
+helm template nuc-fluxcd . -f values.yaml.example
 ```
 
-## Integrate with your tools
+Install the chart:
 
-- [ ] [Set up project integrations](https://git.nixys.ru/apps/nuc-subcharts/nuc-fluxcd/-/settings/integrations)
+```bash
+helm install nuc-fluxcd . \
+  --namespace flux-system \
+  --create-namespace \
+  -f values.yaml.example
+```
 
-## Collaborate with your team
+## Supported Resources
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+The chart renders one template per Flux kind:
 
-## Test and Deploy
+- `Alert`
+- `ArtifactGenerator`
+- `Bucket`
+- `ExternalArtifact`
+- `GitRepository`
+- `HelmChart`
+- `HelmRelease`
+- `HelmRepository`
+- `ImagePolicy`
+- `ImageRepository`
+- `ImageUpdateAutomation`
+- `Kustomization`
+- `OCIRepository`
+- `Provider`
+- `Receiver`
 
-Use the built-in continuous integration in GitLab.
+## Values Model
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+Each top-level map in [values.yaml](values.yaml) maps resource names to one Flux kind:
 
-***
+- `alerts`
+- `artifactGenerators`
+- `buckets`
+- `externalArtifacts`
+- `gitRepositories`
+- `helmCharts`
+- `helmReleases`
+- `helmRepositories`
+- `imagePolicies`
+- `imageRepositories`
+- `imageUpdateAutomations`
+- `kustomizations`
+- `ociRepositories`
+- `providers`
+- `receivers`
 
-# Editing this README
+Every entry uses the same contract:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+| Field | Required | Description |
+|-------|----------|-------------|
+| map key | yes | Resource name used for `metadata.name`. |
+| `namespace` | no | Namespace for the resource. Defaults to the Helm release namespace. |
+| `labels` | no | Labels merged on top of built-in chart labels and `commonLabels`. |
+| `annotations` | no | Annotations merged on top of `commonAnnotations`. |
+| `apiVersion` | no | Per-resource API version override. |
+| `spec` | no | Raw resource spec rendered as-is. |
+| `status` | no | Optional raw status block. Useful for fixtures, not typical production Helm usage. |
 
-## Suggestions for a good README
+Global controls:
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- `nameOverride`
+- `commonLabels`
+- `commonAnnotations`
+- `apiVersions.*`
 
-## Name
-Choose a self-explaining name for your project.
+The value contract is validated by [values.schema.json](values.schema.json).
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Helm Values
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+This section is generated from [values.yaml](values.yaml) by `helm-docs`.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| alerts | object | {} | Alert resources keyed by resource name. |
+| alerts.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| alerts.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| alerts.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| alerts.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| alerts.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| alerts.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| apiVersions.alert | string | `"notification.toolkit.fluxcd.io/v1beta3"` | Default apiVersion for Alert resources. |
+| apiVersions.artifactGenerator | string | `"source.extensions.fluxcd.io/v1beta1"` | Default apiVersion for ArtifactGenerator resources. |
+| apiVersions.bucket | string | `"source.toolkit.fluxcd.io/v1"` | Default apiVersion for Bucket resources. |
+| apiVersions.externalArtifact | string | `"source.toolkit.fluxcd.io/v1"` | Default apiVersion for ExternalArtifact resources. |
+| apiVersions.gitRepository | string | `"source.toolkit.fluxcd.io/v1"` | Default apiVersion for GitRepository resources. |
+| apiVersions.helmChart | string | `"source.toolkit.fluxcd.io/v1"` | Default apiVersion for HelmChart resources. |
+| apiVersions.helmRelease | string | `"helm.toolkit.fluxcd.io/v2"` | Default apiVersion for HelmRelease resources. |
+| apiVersions.helmRepository | string | `"source.toolkit.fluxcd.io/v1"` | Default apiVersion for HelmRepository resources. |
+| apiVersions.imagePolicy | string | `"image.toolkit.fluxcd.io/v1"` | Default apiVersion for ImagePolicy resources. |
+| apiVersions.imageRepository | string | `"image.toolkit.fluxcd.io/v1"` | Default apiVersion for ImageRepository resources. |
+| apiVersions.imageUpdateAutomation | string | `"image.toolkit.fluxcd.io/v1"` | Default apiVersion for ImageUpdateAutomation resources. |
+| apiVersions.kustomization | string | `"kustomize.toolkit.fluxcd.io/v1"` | Default apiVersion for Kustomization resources. |
+| apiVersions.ociRepository | string | `"source.toolkit.fluxcd.io/v1"` | Default apiVersion for OCIRepository resources. |
+| apiVersions.provider | string | `"notification.toolkit.fluxcd.io/v1beta3"` | Default apiVersion for Provider resources. |
+| apiVersions.receiver | string | `"notification.toolkit.fluxcd.io/v1"` | Default apiVersion for Receiver resources. |
+| artifactGenerators | object | {} | ArtifactGenerator resources keyed by resource name. |
+| artifactGenerators.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| artifactGenerators.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| artifactGenerators.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| artifactGenerators.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| artifactGenerators.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| artifactGenerators.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| buckets | object | {} | Bucket resources keyed by resource name. |
+| buckets.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| buckets.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| buckets.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| buckets.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| buckets.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| buckets.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| commonAnnotations | object | `{}` | Extra annotations applied to every rendered resource. |
+| commonLabels | object | `{}` | Extra labels applied to every rendered resource. |
+| externalArtifacts | object | {} | ExternalArtifact resources keyed by resource name. |
+| externalArtifacts.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| externalArtifacts.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| externalArtifacts.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| externalArtifacts.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| externalArtifacts.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| externalArtifacts.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| gitRepositories | object | {} | GitRepository resources keyed by resource name. |
+| gitRepositories.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| gitRepositories.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| gitRepositories.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| gitRepositories.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| gitRepositories.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| gitRepositories.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| helmCharts | object | {} | HelmChart resources keyed by resource name. |
+| helmCharts.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| helmCharts.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| helmCharts.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| helmCharts.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| helmCharts.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| helmCharts.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| helmReleases | object | {} | HelmRelease resources keyed by resource name. |
+| helmReleases.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| helmReleases.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| helmReleases.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| helmReleases.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| helmReleases.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| helmReleases.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| helmRepositories | object | {} | HelmRepository resources keyed by resource name. |
+| helmRepositories.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| helmRepositories.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| helmRepositories.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| helmRepositories.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| helmRepositories.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| helmRepositories.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| imagePolicies | object | {} | ImagePolicy resources keyed by resource name. |
+| imagePolicies.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| imagePolicies.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| imagePolicies.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| imagePolicies.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| imagePolicies.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| imagePolicies.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| imageRepositories | object | {} | ImageRepository resources keyed by resource name. |
+| imageRepositories.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| imageRepositories.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| imageRepositories.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| imageRepositories.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| imageRepositories.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| imageRepositories.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| imageUpdateAutomations | object | {} | ImageUpdateAutomation resources keyed by resource name. |
+| imageUpdateAutomations.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| imageUpdateAutomations.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| imageUpdateAutomations.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| imageUpdateAutomations.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| imageUpdateAutomations.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| imageUpdateAutomations.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| kustomizations | object | {} | Kustomization resources keyed by resource name. |
+| kustomizations.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| kustomizations.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| kustomizations.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| kustomizations.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| kustomizations.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| kustomizations.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| nameOverride | string | `""` | Override the default chart label name if needed. |
+| ociRepositories | object | {} | OCIRepository resources keyed by resource name. |
+| ociRepositories.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| ociRepositories.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| ociRepositories.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| ociRepositories.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| ociRepositories.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| ociRepositories.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| providers | object | {} | Provider resources keyed by resource name. |
+| providers.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| providers.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| providers.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| providers.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| providers.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| providers.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| receivers | object | {} | Receiver resources keyed by resource name. |
+| receivers.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| receivers.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| receivers.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| receivers.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
+| receivers.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| receivers.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## Included Values Files
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+- [values.yaml](values.yaml): minimal defaults that render no resources.
+- [values.yaml.example](values.yaml.example): complete example covering every supported Flux kind.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## Testing
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+The repository keeps the same three-layer test structure as the reference chart:
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+- `tests/units/` for `helm-unittest` suites and backward-compatibility checks
+- `tests/smokes/` for render and schema smoke scenarios
+- `tests/e2e/` for kind-based Helm install checks against real Flux CRDs
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Representative local commands:
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+```bash
+make lint
+make test-unit
+make test-compat
+make test-smoke
+make test-e2e
+```
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Detailed test documentation lives in [docs/TESTS.MD](docs/TESTS.MD). Local dependency setup is documented in [docs/DEPENDENCY.md](docs/DEPENDENCY.md).

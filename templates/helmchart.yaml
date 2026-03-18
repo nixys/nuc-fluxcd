@@ -1,0 +1,7 @@
+{{ include "nuc-fluxcd.renderResources" (dict
+  "root" $
+  "collection" ($.Values.helmCharts | default dict)
+  "kind" "HelmChart"
+  "defaultApiVersion" $.Values.apiVersions.helmChart
+  "namespaced" true
+) }}
