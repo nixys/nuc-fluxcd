@@ -1,0 +1,221 @@
+suite: example resources
+templates:
+  - templates/alert.yaml
+  - templates/artifactgenerator.yaml
+  - templates/bucket.yaml
+  - templates/externalartifact.yaml
+  - templates/gitrepository.yaml
+  - templates/helmchart.yaml
+  - templates/helmrelease.yaml
+  - templates/helmrepository.yaml
+  - templates/imagepolicy.yaml
+  - templates/imagerepository.yaml
+  - templates/imageupdateautomation.yaml
+  - templates/kustomization.yaml
+  - templates/ocirepository.yaml
+  - templates/provider.yaml
+  - templates/receiver.yaml
+release:
+  name: unit-test
+  namespace: unit-namespace
+
+tests:
+  - it: renders the expected document count per template
+    values:
+      - ../../values.yaml.example
+    asserts:
+      - hasDocuments: { count: 1 }
+        template: templates/alert.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/artifactgenerator.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/bucket.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/externalartifact.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/gitrepository.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/helmchart.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/helmrelease.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/helmrepository.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/imagepolicy.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/imagerepository.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/imageupdateautomation.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/kustomization.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/ocirepository.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/provider.yaml
+      - hasDocuments: { count: 1 }
+        template: templates/receiver.yaml
+
+  - it: renders the expected example manifests
+    values:
+      - ../../values.yaml.example
+    asserts:
+      - containsDocument:
+          kind: Alert
+          apiVersion: notification.toolkit.fluxcd.io/v1beta3
+          name: platform-alert
+          namespace: flux-system
+          any: true
+        template: templates/alert.yaml
+      - containsDocument:
+          kind: ArtifactGenerator
+          apiVersion: source.extensions.fluxcd.io/v1beta1
+          name: platform-artifacts
+          namespace: flux-system
+          any: true
+        template: templates/artifactgenerator.yaml
+      - containsDocument:
+          kind: Bucket
+          apiVersion: source.toolkit.fluxcd.io/v1
+          name: app-bucket
+          namespace: flux-system
+          any: true
+        template: templates/bucket.yaml
+      - containsDocument:
+          kind: ExternalArtifact
+          apiVersion: source.toolkit.fluxcd.io/v1
+          name: release-bundle
+          namespace: flux-system
+          any: true
+        template: templates/externalartifact.yaml
+      - containsDocument:
+          kind: GitRepository
+          apiVersion: source.toolkit.fluxcd.io/v1
+          name: platform-config
+          namespace: flux-system
+          any: true
+        template: templates/gitrepository.yaml
+      - containsDocument:
+          kind: HelmChart
+          apiVersion: source.toolkit.fluxcd.io/v1
+          name: podinfo-chart
+          namespace: flux-system
+          any: true
+        template: templates/helmchart.yaml
+      - containsDocument:
+          kind: HelmRelease
+          apiVersion: helm.toolkit.fluxcd.io/v2
+          name: podinfo
+          namespace: flux-system
+          any: true
+        template: templates/helmrelease.yaml
+      - containsDocument:
+          kind: HelmRepository
+          apiVersion: source.toolkit.fluxcd.io/v1
+          name: podinfo
+          namespace: flux-system
+          any: true
+        template: templates/helmrepository.yaml
+      - containsDocument:
+          kind: ImagePolicy
+          apiVersion: image.toolkit.fluxcd.io/v1
+          name: podinfo-policy
+          namespace: flux-system
+          any: true
+        template: templates/imagepolicy.yaml
+      - containsDocument:
+          kind: ImageRepository
+          apiVersion: image.toolkit.fluxcd.io/v1
+          name: podinfo-images
+          namespace: flux-system
+          any: true
+        template: templates/imagerepository.yaml
+      - containsDocument:
+          kind: ImageUpdateAutomation
+          apiVersion: image.toolkit.fluxcd.io/v1
+          name: podinfo-updater
+          namespace: flux-system
+          any: true
+        template: templates/imageupdateautomation.yaml
+      - containsDocument:
+          kind: Kustomization
+          apiVersion: kustomize.toolkit.fluxcd.io/v1
+          name: apps
+          namespace: flux-system
+          any: true
+        template: templates/kustomization.yaml
+      - containsDocument:
+          kind: OCIRepository
+          apiVersion: source.toolkit.fluxcd.io/v1
+          name: podinfo-oci
+          namespace: flux-system
+          any: true
+        template: templates/ocirepository.yaml
+      - containsDocument:
+          kind: Provider
+          apiVersion: notification.toolkit.fluxcd.io/v1beta3
+          name: slack-provider
+          namespace: flux-system
+          any: true
+        template: templates/provider.yaml
+      - containsDocument:
+          kind: Receiver
+          apiVersion: notification.toolkit.fluxcd.io/v1
+          name: github-receiver
+          namespace: flux-system
+          any: true
+        template: templates/receiver.yaml
+
+  - it: renders the HelmRelease example
+    values:
+      - ../../values.yaml.example
+    template: templates/helmrelease.yaml
+    documentSelector:
+      path: metadata.name
+      value: podinfo
+    asserts:
+      - isKind: { of: HelmRelease }
+      - equal:
+          path: spec.chart.spec.sourceRef.name
+          value: podinfo
+      - equal:
+          path: spec.values.replicaCount
+          value: 2
+
+  - it: renders the GitRepository example
+    values:
+      - ../../values.yaml.example
+    template: templates/gitrepository.yaml
+    documentSelector:
+      path: metadata.name
+      value: platform-config
+    asserts:
+      - isKind: { of: GitRepository }
+      - equal:
+          path: spec.ref.branch
+          value: main
+
+  - it: renders the ImageUpdateAutomation example
+    values:
+      - ../../values.yaml.example
+    template: templates/imageupdateautomation.yaml
+    documentSelector:
+      path: metadata.name
+      value: podinfo-updater
+    asserts:
+      - isKind: { of: ImageUpdateAutomation }
+      - equal:
+          path: spec.update.strategy
+          value: Setters
+
+  - it: renders the Receiver example
+    values:
+      - ../../values.yaml.example
+    template: templates/receiver.yaml
+    documentSelector:
+      path: metadata.name
+      value: github-receiver
+    asserts:
+      - isKind: { of: Receiver }
+      - equal:
+          path: spec.events[1]
+          value: push

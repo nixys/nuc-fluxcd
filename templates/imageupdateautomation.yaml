@@ -1,0 +1,7 @@
+{{ include "nuc-fluxcd.renderResources" (dict
+  "root" $
+  "collection" ($.Values.imageUpdateAutomations | default dict)
+  "kind" "ImageUpdateAutomation"
+  "defaultApiVersion" $.Values.apiVersions.imageUpdateAutomation
+  "namespaced" true
+) }}

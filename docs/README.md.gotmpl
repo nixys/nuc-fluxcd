@@ -1,0 +1,114 @@
+# NUC FluxCD
+
+Helm chart for rendering FluxCD custom resources from declarative values.
+
+The chart does not install Flux controllers or CRDs. It only renders Flux resources that are already supported by the target cluster. The default API versions are aligned with the CRDs referenced by [`flux2/manifests/crds`](https://github.com/fluxcd/flux2/blob/main/manifests/crds/kustomization.yaml).
+
+## Quick Start
+
+Render the example configuration:
+
+```bash
+helm template nuc-fluxcd . -f values.yaml.example
+```
+
+Install the chart:
+
+```bash
+helm install nuc-fluxcd . \
+  --namespace flux-system \
+  --create-namespace \
+  -f values.yaml.example
+```
+
+## Supported Resources
+
+The chart renders one template per Flux kind:
+
+- `Alert`
+- `ArtifactGenerator`
+- `Bucket`
+- `ExternalArtifact`
+- `GitRepository`
+- `HelmChart`
+- `HelmRelease`
+- `HelmRepository`
+- `ImagePolicy`
+- `ImageRepository`
+- `ImageUpdateAutomation`
+- `Kustomization`
+- `OCIRepository`
+- `Provider`
+- `Receiver`
+
+## Values Model
+
+Each top-level map in [values.yaml](values.yaml) maps resource names to one Flux kind:
+
+- `alerts`
+- `artifactGenerators`
+- `buckets`
+- `externalArtifacts`
+- `gitRepositories`
+- `helmCharts`
+- `helmReleases`
+- `helmRepositories`
+- `imagePolicies`
+- `imageRepositories`
+- `imageUpdateAutomations`
+- `kustomizations`
+- `ociRepositories`
+- `providers`
+- `receivers`
+
+Every entry uses the same contract:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| map key | yes | Resource name used for `metadata.name`. |
+| `namespace` | no | Namespace for the resource. Defaults to the Helm release namespace. |
+| `labels` | no | Labels merged on top of built-in chart labels and `commonLabels`. |
+| `annotations` | no | Annotations merged on top of `commonAnnotations`. |
+| `apiVersion` | no | Per-resource API version override. |
+| `spec` | no | Raw resource spec rendered as-is. |
+| `status` | no | Optional raw status block. Useful for fixtures, not typical production Helm usage. |
+
+Global controls:
+
+- `nameOverride`
+- `commonLabels`
+- `commonAnnotations`
+- `apiVersions.*`
+
+The value contract is validated by [values.schema.json](values.schema.json).
+
+## Helm Values
+
+This section is generated from [values.yaml](values.yaml) by `helm-docs`.
+
+{{ template "chart.valuesTable" . }}
+
+## Included Values Files
+
+- [values.yaml](values.yaml): minimal defaults that render no resources.
+- [values.yaml.example](values.yaml.example): complete example covering every supported Flux kind.
+
+## Testing
+
+The repository keeps the same three-layer test structure as the reference chart:
+
+- `tests/units/` for `helm-unittest` suites and backward-compatibility checks
+- `tests/smokes/` for render and schema smoke scenarios
+- `tests/e2e/` for kind-based Helm install checks against real Flux CRDs
+
+Representative local commands:
+
+```bash
+make lint
+make test-unit
+make test-compat
+make test-smoke
+make test-e2e
+```
+
+Detailed test documentation lives in [docs/TESTS.MD](docs/TESTS.MD). Local dependency setup is documented in [docs/DEPENDENCY.md](docs/DEPENDENCY.md).

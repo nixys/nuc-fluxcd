@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "nuc-fluxcd values",
+  "description": "Schema for nuc-fluxcd Helm chart values.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "nameOverride": {
+      "type": "string",
+      "description": "Override the chart name used in generated labels."
+    },
+    "commonLabels": {
+      "$ref": "#/definitions/stringMap",
+      "description": "Labels merged into every rendered resource."
+    },
+    "commonAnnotations": {
+      "$ref": "#/definitions/stringMap",
+      "description": "Annotations merged into every rendered resource."
+    },
+    "apiVersions": {
+      "type": "object",
+      "description": "Default API version overrides per supported Flux kind.",
+      "additionalProperties": false,
+      "properties": {
+        "alert": { "$ref": "#/definitions/nonEmptyString" },
+        "artifactGenerator": { "$ref": "#/definitions/nonEmptyString" },
+        "bucket": { "$ref": "#/definitions/nonEmptyString" },
+        "externalArtifact": { "$ref": "#/definitions/nonEmptyString" },
+        "gitRepository": { "$ref": "#/definitions/nonEmptyString" },
+        "helmChart": { "$ref": "#/definitions/nonEmptyString" },
+        "helmRelease": { "$ref": "#/definitions/nonEmptyString" },
+        "helmRepository": { "$ref": "#/definitions/nonEmptyString" },
+        "imagePolicy": { "$ref": "#/definitions/nonEmptyString" },
+        "imageRepository": { "$ref": "#/definitions/nonEmptyString" },
+        "imageUpdateAutomation": { "$ref": "#/definitions/nonEmptyString" },
+        "kustomization": { "$ref": "#/definitions/nonEmptyString" },
+        "ociRepository": { "$ref": "#/definitions/nonEmptyString" },
+        "provider": { "$ref": "#/definitions/nonEmptyString" },
+        "receiver": { "$ref": "#/definitions/nonEmptyString" }
+      }
+    },
+    "alerts": { "$ref": "#/definitions/resourceMap", "description": "Map of Alert resources keyed by resource name." },
+    "artifactGenerators": { "$ref": "#/definitions/resourceMap", "description": "Map of ArtifactGenerator resources keyed by resource name." },
+    "buckets": { "$ref": "#/definitions/resourceMap", "description": "Map of Bucket resources keyed by resource name." },
+    "externalArtifacts": { "$ref": "#/definitions/resourceMap", "description": "Map of ExternalArtifact resources keyed by resource name." },
+    "gitRepositories": { "$ref": "#/definitions/resourceMap", "description": "Map of GitRepository resources keyed by resource name." },
+    "helmCharts": { "$ref": "#/definitions/resourceMap", "description": "Map of HelmChart resources keyed by resource name." },
+    "helmReleases": { "$ref": "#/definitions/resourceMap", "description": "Map of HelmRelease resources keyed by resource name." },
+    "helmRepositories": { "$ref": "#/definitions/resourceMap", "description": "Map of HelmRepository resources keyed by resource name." },
+    "imagePolicies": { "$ref": "#/definitions/resourceMap", "description": "Map of ImagePolicy resources keyed by resource name." },
+    "imageRepositories": { "$ref": "#/definitions/resourceMap", "description": "Map of ImageRepository resources keyed by resource name." },
+    "imageUpdateAutomations": { "$ref": "#/definitions/resourceMap", "description": "Map of ImageUpdateAutomation resources keyed by resource name." },
+    "kustomizations": { "$ref": "#/definitions/resourceMap", "description": "Map of Kustomization resources keyed by resource name." },
+    "ociRepositories": { "$ref": "#/definitions/resourceMap", "description": "Map of OCIRepository resources keyed by resource name." },
+    "providers": { "$ref": "#/definitions/resourceMap", "description": "Map of Provider resources keyed by resource name." },
+    "receivers": { "$ref": "#/definitions/resourceMap", "description": "Map of Receiver resources keyed by resource name." }
+  },
+  "definitions": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stringMap": {
+      "type": "object",
+      "default": {},
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "freeFormObject": {
+      "type": "object",
+      "description": "Arbitrary Flux custom resource payload passed through by the chart.",
+      "additionalProperties": true
+    },
+    "resourceItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "$ref": "#/definitions/nonEmptyString",
+          "description": "Namespace for namespaced resources."
+        },
+        "labels": {
+          "$ref": "#/definitions/stringMap",
+          "description": "Resource-specific labels."
+        },
+        "annotations": {
+          "$ref": "#/definitions/stringMap",
+          "description": "Resource-specific annotations."
+        },
+        "apiVersion": {
+          "$ref": "#/definitions/nonEmptyString",
+          "description": "Per-resource API version override."
+        },
+        "spec": {
+          "$ref": "#/definitions/freeFormObject",
+          "description": "Resource spec rendered as-is."
+        },
+        "status": {
+          "$ref": "#/definitions/freeFormObject",
+          "description": "Optional resource status rendered as-is."
+        }
+      }
+    },
+    "resourceMap": {
+      "type": "object",
+      "default": {},
+      "propertyNames": {
+        "$ref": "#/definitions/nonEmptyString"
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/resourceItem"
+      }
+    }
+  }
+}

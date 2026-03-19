@@ -1,0 +1,34 @@
+nameOverride: flux-platform
+
+commonLabels:
+  platform: flux
+  component: shared
+  tier: common
+
+commonAnnotations:
+  team: platform
+  note: common
+
+apiVersions:
+  helmRelease: helm.toolkit.fluxcd.io/v2beta2
+
+gitRepositories:
+  platform-config:
+    apiVersion: example.net/v1alpha1
+    labels:
+      component: source
+      tier: control-plane
+    annotations:
+      note: gitops
+    spec:
+      url: https://github.com/example/platform-config
+
+helmReleases:
+  platform-release:
+    namespace: release-space
+    labels:
+      component: release
+    annotations:
+      note: promoted
+    spec:
+      releaseName: platform

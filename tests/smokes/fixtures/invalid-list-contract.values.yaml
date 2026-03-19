@@ -1,0 +1,5 @@
+gitRepositories:
+  - name: invalid-contract
+    spec:
+      interval: 1m
+      url: https://github.com/example/invalid

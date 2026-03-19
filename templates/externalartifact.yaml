@@ -1,0 +1,7 @@
+{{ include "nuc-fluxcd.renderResources" (dict
+  "root" $
+  "collection" ($.Values.externalArtifacts | default dict)
+  "kind" "ExternalArtifact"
+  "defaultApiVersion" $.Values.apiVersions.externalArtifact
+  "namespaced" true
+) }}

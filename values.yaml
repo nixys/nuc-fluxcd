@@ -1,0 +1,336 @@
+# -- Override the default chart label name if needed.
+nameOverride: ""
+
+# -- Extra labels applied to every rendered resource.
+commonLabels: {}
+# -- Extra annotations applied to every rendered resource.
+commonAnnotations: {}
+
+# The defaults below are aligned with the Flux CRDs referenced by
+# https://github.com/fluxcd/flux2/blob/main/manifests/crds/kustomization.yaml.
+# Override them if your cluster serves another Flux API version.
+apiVersions:
+  # -- Default apiVersion for Alert resources.
+  alert: notification.toolkit.fluxcd.io/v1beta3
+  # -- Default apiVersion for ArtifactGenerator resources.
+  artifactGenerator: source.extensions.fluxcd.io/v1beta1
+  # -- Default apiVersion for Bucket resources.
+  bucket: source.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for ExternalArtifact resources.
+  externalArtifact: source.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for GitRepository resources.
+  gitRepository: source.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for HelmChart resources.
+  helmChart: source.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for HelmRelease resources.
+  helmRelease: helm.toolkit.fluxcd.io/v2
+  # -- Default apiVersion for HelmRepository resources.
+  helmRepository: source.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for ImagePolicy resources.
+  imagePolicy: image.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for ImageRepository resources.
+  imageRepository: image.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for ImageUpdateAutomation resources.
+  imageUpdateAutomation: image.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for Kustomization resources.
+  kustomization: kustomize.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for OCIRepository resources.
+  ociRepository: source.toolkit.fluxcd.io/v1
+  # -- Default apiVersion for Provider resources.
+  provider: notification.toolkit.fluxcd.io/v1beta3
+  # -- Default apiVersion for Receiver resources.
+  receiver: notification.toolkit.fluxcd.io/v1
+
+# Each map entry supports:
+# - the top-level map key becomes metadata.name
+# - namespace: optional, defaults to the release namespace
+# - labels: optional
+# - annotations: optional
+# - apiVersion: optional override for a single resource
+# - spec: arbitrary resource spec
+# - status: optional raw status block for fixtures and synthetic manifests
+
+# -- Alert resources keyed by resource name.
+# @default -- {}
+alerts:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: notification.toolkit.fluxcd.io/v1beta3
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- ArtifactGenerator resources keyed by resource name.
+# @default -- {}
+artifactGenerators:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: source.extensions.fluxcd.io/v1beta1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- Bucket resources keyed by resource name.
+# @default -- {}
+buckets:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: source.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- ExternalArtifact resources keyed by resource name.
+# @default -- {}
+externalArtifacts:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: source.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- GitRepository resources keyed by resource name.
+# @default -- {}
+gitRepositories:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: source.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- HelmChart resources keyed by resource name.
+# @default -- {}
+helmCharts:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: source.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- HelmRelease resources keyed by resource name.
+# @default -- {}
+helmReleases:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: helm.toolkit.fluxcd.io/v2
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- HelmRepository resources keyed by resource name.
+# @default -- {}
+helmRepositories:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: source.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- ImagePolicy resources keyed by resource name.
+# @default -- {}
+imagePolicies:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: image.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- ImageRepository resources keyed by resource name.
+# @default -- {}
+imageRepositories:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: image.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- ImageUpdateAutomation resources keyed by resource name.
+# @default -- {}
+imageUpdateAutomations:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: image.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- Kustomization resources keyed by resource name.
+# @default -- {}
+kustomizations:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- OCIRepository resources keyed by resource name.
+# @default -- {}
+ociRepositories:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: source.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- Provider resources keyed by resource name.
+# @default -- {}
+providers:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: notification.toolkit.fluxcd.io/v1beta3
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- Receiver resources keyed by resource name.
+# @default -- {}
+receivers:
+  __helm_docs_example__:
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: notification.toolkit.fluxcd.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
