@@ -6,10 +6,12 @@ The chart does not install Flux controllers or CRDs. It only renders Flux resour
 
 ## Quick Start
 
-Render the example configuration:
+Add the Nixys chart repository:
 
 ```bash
-helm template nuc-fluxcd . -f values.yaml.example
+helm repo add nixys https://registry.nixys.io/chartrepo/public
+# or
+helm repo add nixys https://registry.nixys.ru/chartrepo/public
 ```
 
 Install the chart:
@@ -73,8 +75,12 @@ Every entry uses the same contract:
 | `spec` | no | Raw resource spec rendered as-is. |
 | `status` | no | Optional raw status block. Useful for fixtures, not typical production Helm usage. |
 
+Setting a map entry to `null` in a higher-precedence values file suppresses the default resource from a lower-precedence values file.
+
 Global controls:
 
+- `enabled`
+- `global`
 - `nameOverride`
 - `commonLabels`
 - `commonAnnotations`
@@ -126,6 +132,7 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`.
 | buckets.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
 | commonAnnotations | object | `{}` | Extra annotations applied to every rendered resource. |
 | commonLabels | object | `{}` | Extra labels applied to every rendered resource. |
+| enabled | bool | `true` | Enable nuc-fluxcd chart rendering. |
 | externalArtifacts | object | {} | ExternalArtifact resources keyed by resource name. |
 | externalArtifacts.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | externalArtifacts.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
@@ -140,6 +147,7 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`.
 | gitRepositories.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. |
 | gitRepositories.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
 | gitRepositories.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| global | object | `{}` | Compatibility values inherited from umbrella charts. Accepted but ignored by this chart. |
 | helmCharts | object | {} | HelmChart resources keyed by resource name. |
 | helmCharts.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | helmCharts.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |

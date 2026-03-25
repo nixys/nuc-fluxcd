@@ -6,10 +6,12 @@ The chart does not install Flux controllers or CRDs. It only renders Flux resour
 
 ## Quick Start
 
-Render the example configuration:
+Add the Nixys chart repository:
 
 ```bash
-helm template nuc-fluxcd . -f values.yaml.example
+helm repo add nixys https://registry.nixys.io/chartrepo/public
+# or
+helm repo add nixys https://registry.nixys.ru/chartrepo/public
 ```
 
 Install the chart:
@@ -73,8 +75,12 @@ Every entry uses the same contract:
 | `spec` | no | Raw resource spec rendered as-is. |
 | `status` | no | Optional raw status block. Useful for fixtures, not typical production Helm usage. |
 
+Setting a map entry to `null` in a higher-precedence values file suppresses the default resource from a lower-precedence values file.
+
 Global controls:
 
+- `enabled`
+- `global`
 - `nameOverride`
 - `commonLabels`
 - `commonAnnotations`

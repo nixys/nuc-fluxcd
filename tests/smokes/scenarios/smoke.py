@@ -32,6 +32,10 @@ class SmokeContext:
     def invalid_list_contract_values(self) -> Path:
         return self.repo_root / "tests" / "smokes" / "fixtures" / "invalid-list-contract.values.yaml"
 
+    @property
+    def null_override_values(self) -> Path:
+        return self.repo_root / "tests" / "smokes" / "fixtures" / "null-override.values.yaml"
+
 
 def check_default_empty(context: SmokeContext) -> None:
     helm.lint(context.chart_dir, workdir=context.workdir)
@@ -118,6 +122,53 @@ def check_rendering_contract(context: SmokeContext) -> None:
     render.assert_path(helm_release, "metadata.annotations.team", "platform")
     render.assert_path(helm_release, "metadata.annotations.note", "promoted")
     render.assert_path(helm_release, "spec.releaseName", "platform")
+
+
+def check_null_override(context: SmokeContext) -> None:
+    helm.lint(
+        context.chart_dir,
+        values_file=context.example_values,
+        values_files=[context.null_override_values],
+        workdir=context.workdir,
+    )
+    output_path = context.render_dir / "null-override.yaml"
+    helm.template(
+        context.chart_dir,
+        release_name=context.release_name,
+        namespace=context.namespace,
+        values_file=context.example_values,
+        values_files=[context.null_override_values],
+        output_path=output_path,
+        workdir=context.workdir,
+    )
+
+    documents = render.load_documents(output_path)
+    render.assert_doc_count(documents, 14)
+    render.assert_kinds(
+        documents,
+        {
+            "ArtifactGenerator",
+            "Bucket",
+            "ExternalArtifact",
+            "GitRepository",
+            "HelmChart",
+            "HelmRelease",
+            "HelmRepository",
+            "ImagePolicy",
+            "ImageRepository",
+            "ImageUpdateAutomation",
+            "Kustomization",
+            "OCIRepository",
+            "Provider",
+            "Receiver",
+        },
+    )
+
+    helm_release = render.select_document(documents, kind="HelmRelease", name="podinfo")
+    render.assert_path(helm_release, "spec.values.replicaCount", 2)
+
+    receiver = render.select_document(documents, kind="Receiver", name="github-receiver")
+    render.assert_path(receiver, "spec.events[1]", "push")
 
 
 def check_example_render(context: SmokeContext) -> None:
@@ -207,6 +258,7 @@ SCENARIOS: list[tuple[str, Callable[[SmokeContext], None]]] = [
     ("default-empty", check_default_empty),
     ("schema-invalid-list-contract", check_schema_invalid_list_contract),
     ("rendering-contract", check_rendering_contract),
+    ("null-override", check_null_override),
     ("example-render", check_example_render),
     ("example-kubeconform", check_example_kubeconform),
 ]

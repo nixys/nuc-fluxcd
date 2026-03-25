@@ -2,6 +2,10 @@
 # Render with:
 #   helm template nuc-fluxcd . -f values.yaml.example
 
+# Compatibility knobs for umbrella-chart usage.
+enabled: true
+global: {}
+
 nameOverride: ""
 
 commonLabels:

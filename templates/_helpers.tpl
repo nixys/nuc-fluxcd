@@ -46,16 +46,22 @@ status:
 {{- end -}}
 {{- define "nuc-fluxcd.renderResources" -}}
 {{- $collection := .collection | default dict -}}
+{{- $documents := list -}}
 {{- range $resourceName := keys $collection | sortAlpha }}
 {{- $item := get $collection $resourceName -}}
----
-{{ include "nuc-fluxcd.renderResource" (dict
+{{- if kindIs "map" $item }}
+{{- $document := include "nuc-fluxcd.renderResource" (dict
   "root" $.root
   "item" $item
   "resourceName" $resourceName
   "kind" $.kind
   "defaultApiVersion" $.defaultApiVersion
   "namespaced" $.namespaced
-) }}
-{{ end }}
+) -}}
+{{- if $document }}
+{{- $documents = append $documents $document -}}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- join "\n---\n" $documents -}}
 {{- end -}}

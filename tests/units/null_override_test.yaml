@@ -1,0 +1,27 @@
+suite: null override contract
+templates:
+  - templates/alert.yaml
+  - templates/helmrelease.yaml
+release:
+  name: unit-test
+  namespace: unit-namespace
+
+tests:
+  - it: suppresses default resources overridden with null
+    values:
+      - ../../values.yaml.example
+      - values/null_override.values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: templates/alert.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/helmrelease.yaml
+      - containsDocument:
+          kind: HelmRelease
+          apiVersion: helm.toolkit.fluxcd.io/v2
+          name: podinfo
+          namespace: flux-system
+          any: true
+        template: templates/helmrelease.yaml
