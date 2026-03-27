@@ -1,5 +1,7 @@
 # NUC FluxCD
 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/nuc-fluxcd)](https://artifacthub.io/packages/search?repo=nuc-fluxcd)
+
 Helm chart for rendering FluxCD custom resources from declarative values.
 
 The chart does not install Flux controllers or CRDs. It only renders Flux resources that are already supported by the target cluster. The default API versions are aligned with the CRDs referenced by [`flux2/manifests/crds`](https://github.com/fluxcd/flux2/blob/main/manifests/crds/kustomization.yaml).
