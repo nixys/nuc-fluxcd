@@ -52,7 +52,7 @@ Covered scenarios:
    Renders `values.yaml.example` and verifies that all supported Flux kinds are produced.
 
 5. `example-kubeconform`
-   Keeps kubeconform wired for full-flow validation. By default it skips Flux kinds because public schema registries do not consistently ship JSON schemas for the whole Flux API surface.
+   Keeps kubeconform wired for full-flow validation. By default it skips Flux kinds because public schema registries do not consistently ship JSON schemas for the whole Flux API surface. `KUBECONFORM_SKIP_KINDS` is treated as an additive list, so CI can append extra kinds without dropping the repository defaults.
 
 ## E2E Tests
 

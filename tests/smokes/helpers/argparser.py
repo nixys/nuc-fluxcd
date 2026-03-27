@@ -8,6 +8,24 @@ DEFAULT_SCHEMA_LOCATION = (
     "{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
 )
 
+DEFAULT_SKIP_KINDS = (
+    "Alert",
+    "ArtifactGenerator",
+    "Bucket",
+    "ExternalArtifact",
+    "GitRepository",
+    "HelmChart",
+    "HelmRelease",
+    "HelmRepository",
+    "ImagePolicy",
+    "ImageRepository",
+    "ImageUpdateAutomation",
+    "Kustomization",
+    "OCIRepository",
+    "Provider",
+    "Receiver",
+)
+
 SCENARIO_CHOICES = [
     "all",
     "default-empty",
@@ -19,8 +37,28 @@ SCENARIO_CHOICES = [
 ]
 
 
+def split_csv(value: str) -> list[str]:
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def merge_csv(*values: str) -> str:
+    merged: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        for item in split_csv(value):
+            if item in seen:
+                continue
+            seen.add(item)
+            merged.append(item)
+    return ",".join(merged)
+
+
 def build_parser() -> argparse.ArgumentParser:
     repo_root = Path(__file__).resolve().parents[3]
+    default_skip_kinds = merge_csv(
+        ",".join(DEFAULT_SKIP_KINDS),
+        os.environ.get("KUBECONFORM_SKIP_KINDS", ""),
+    )
     parser = argparse.ArgumentParser(
         description="Run smoke tests for the nuc-fluxcd chart."
     )
@@ -64,11 +102,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--skip-kinds",
-        default=os.environ.get(
-            "KUBECONFORM_SKIP_KINDS",
-            "Alert,ArtifactGenerator,Bucket,ExternalArtifact,GitRepository,HelmChart,HelmRelease,HelmRepository,ImagePolicy,ImageRepository,ImageUpdateAutomation,Kustomization,OCIRepository,Provider,Receiver",
+        default=default_skip_kinds,
+        help=(
+            "Comma-separated kinds to skip in kubeconform. "
+            "KUBECONFORM_SKIP_KINDS extends the repository-default Flux skip list."
         ),
-        help="Comma-separated kinds to skip in kubeconform.",
     )
     parser.add_argument(
         "--workdir",

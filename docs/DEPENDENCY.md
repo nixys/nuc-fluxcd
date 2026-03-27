@@ -41,4 +41,5 @@ The chart itself targets Flux CRDs from the upstream [`flux2/manifests/crds`](ht
 
 - `make test-e2e` requires outbound access because it boots a kind node image and applies Flux CRDs from GitHub.
 - Public JSON schema catalogs do not cover the full Flux API surface consistently. The default smoke configuration therefore skips Flux kinds in `kubeconform` unless you supply a suitable schema source.
+- `KUBECONFORM_SKIP_KINDS` augments the repository-default Flux skip list in the smoke runner, which keeps CI-specific skip additions from re-enabling unsupported Flux kinds by accident.
 - The repository is shell-first for compatibility and e2e flows. On Windows, prefer WSL2.
