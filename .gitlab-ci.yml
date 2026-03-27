@@ -22,23 +22,6 @@ include:
 variables:
   KUBECONFORM_SKIP_KINDS_DEFAULT: "Alert,ArtifactGenerator,Bucket,ExternalArtifact,GitRepository,HelmChart,HelmRelease,HelmRepository,ImagePolicy,ImageRepository,ImageUpdateAutomation,Kustomization,OCIRepository,Provider,Receiver"
 
-before_script:
-  - |
-    merged_skip_kinds=""
-    old_ifs="$IFS"
-    IFS=','
-    for kind in ${KUBECONFORM_SKIP_KINDS_DEFAULT:-} ${KUBECONFORM_SKIP_KINDS:-}; do
-      kind="${kind#"${kind%%[![:space:]]*}"}"
-      kind="${kind%"${kind##*[![:space:]]}"}"
-      [ -n "$kind" ] || continue
-      case ",$merged_skip_kinds," in
-        *,"$kind",*) ;;
-        *) merged_skip_kinds="${merged_skip_kinds:+$merged_skip_kinds,}$kind" ;;
-      esac
-    done
-    IFS="$old_ifs"
-    export KUBECONFORM_SKIP_KINDS="$merged_skip_kinds"
-
 stages:
   - lint
   - tests
