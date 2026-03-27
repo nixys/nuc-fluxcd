@@ -20,7 +20,7 @@ include:
       - "/sign-subchart.gitlab-ci.yml"
 
 variables:
-  KUBECONFORM_SKIP_KINDS_DEFAULT: "Alert,ArtifactGenerator,Bucket,ExternalArtifact,GitRepository,HelmChart,HelmRelease,HelmRepository,ImagePolicy,ImageRepository,ImageUpdateAutomation,Kustomization,OCIRepository,Provider,Receiver"
+  KUBECONFORM_SKIP_KINDS: "Alert,ArtifactGenerator,Bucket,ExternalArtifact,GitRepository,HelmChart,HelmRelease,HelmRepository,ImagePolicy,ImageRepository,ImageUpdateAutomation,Kustomization,OCIRepository,Provider,Receiver,Application,ApplicationSet,AppProject"
 
 stages:
   - lint
