@@ -3,7 +3,7 @@ apiVersion: v2
 name: nuc-fluxcd
 description: Helm chart for rendering FluxCD custom resources from declarative values
 type: application
-version: 1.0.0-rc8
+version: 1.0.0
 appVersion: "v1"
 icon: https://registry.nixys.ru/logo.png
 home: https://github.com/nixys/nuc-fluxcd
@@ -21,7 +21,7 @@ maintainers:
     email: v.vorobyov@nixys.ru
 annotations:
   artifacthub.io/category: integration-delivery
-  artifacthub.io/prerelease: "true"
+  artifacthub.io/prerelease: "false"
   artifacthub.io/license: Apache License 2.0
   artifacthub.io/links:  |
     - name: Home

@@ -11,18 +11,15 @@ The chart does not install Flux controllers or CRDs. It only renders Flux resour
 Add the Nixys chart repository:
 
 ```bash
-helm repo add nixys https://registry.nixys.io/chartrepo/public
-# or
-helm repo add nixys https://registry.nixys.ru/chartrepo/public
+helm repo add nixys https://registry.nixys.io/nuc
 ```
 
 Install the chart:
 
 ```bash
-helm install nuc-fluxcd . \
-  --namespace flux-system \
-  --create-namespace \
-  -f values.yaml.example
+helm install nuc-argocd nixys/nuc-argocd \
+  --namespace fluxcd \
+  --create-namespace
 ```
 
 ## Supported Resources
